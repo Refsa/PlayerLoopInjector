@@ -229,5 +229,19 @@ namespace PlayerLoopInjector.Tests
                 Assert.AreEqual(i, injectedSystem.Order.Dequeue(), order);
             }
         }
+
+        [UnityTest]
+        public IEnumerator CanRemoveInjection()
+        {
+            var injectedSystem = new InjectedSystem();
+            Injector.Inject(injectedSystem);
+
+            yield return null;
+            Assert.True(Injector.IsInjected(injectedSystem));
+            Injector.Remove(injectedSystem);
+
+            yield return null;
+            Assert.False(Injector.IsInjected(injectedSystem));
+        }
     }
 }
