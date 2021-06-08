@@ -131,6 +131,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator InjectInitialization()
         {
+            Injector.ClearAll();
+
             var initializationSystem = new InitializationSystem();
             Injector.Inject(initializationSystem);
             yield return null;
@@ -148,6 +150,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator InjectEarlyUpdate()
         {
+            Injector.ClearAll();
+
             var earlyUpdateSystem = new EarlyUpdateSystem();
             Injector.Inject(earlyUpdateSystem);
             yield return null;
@@ -165,6 +169,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator InjectPreUpdate()
         {
+            Injector.ClearAll();
+
             var preUpdateSystem = new PreUpdateSystem();
             Injector.Inject(preUpdateSystem);
             yield return null;
@@ -182,6 +188,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator InjectUpdate()
         {
+            Injector.ClearAll();
+
             var updateSystem = new UpdateSystem();
             Injector.Inject(updateSystem);
             yield return null;
@@ -199,6 +207,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator InjectPostUpdate()
         {
+            Injector.ClearAll();
+
             var postUpdateSystem = new PostUpdateSystem();
             Injector.Inject(postUpdateSystem);
             yield return null;
@@ -216,6 +226,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator InjectEndOfFrame()
         {
+            Injector.ClearAll();
+
             var endOfFrameSystem = new EndOfFrameSystem();
             Injector.Inject(endOfFrameSystem);
             yield return null;
@@ -233,6 +245,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator InjectFixedUpdate()
         {
+            Injector.ClearAll();
+            
             var fixedUpdateSystem = new FixedUpdateSystem();
             Injector.Inject(fixedUpdateSystem);
             yield return new WaitForFixedUpdate();
@@ -250,6 +264,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator OrderOfInjectedSystem()
         {
+            Injector.ClearAll();
+
             var injectedSystem = new InjectedSystem();
             Injector.Inject(injectedSystem);
 
@@ -268,6 +284,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator CanRemoveInjection()
         {
+            Injector.ClearAll();
+
             var injectedSystem = new InjectedSystem();
             Injector.Inject(injectedSystem);
 
@@ -284,6 +302,8 @@ namespace PlayerLoopInjector.Tests
         [UnityTest]
         public IEnumerator SystemWithNullRefIsRemoved()
         {
+            Injector.ClearAll();
+
             var go = new GameObject();
             var injectedComponent = go.AddComponent<InjectedComponent>();
             Injector.Inject(injectedComponent);
@@ -293,7 +313,6 @@ namespace PlayerLoopInjector.Tests
             GameObject.Destroy(go);
             injectedComponent = null;
 
-            yield return null;
             yield return null;
             yield return null;
 

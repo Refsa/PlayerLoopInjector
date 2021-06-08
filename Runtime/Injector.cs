@@ -73,9 +73,6 @@ namespace PlayerLoopInjector
             }
 
             PlayerLoop.SetPlayerLoop(playerLoop);
-
-            // var value = PrintPlayerLoopTypes(ref playerLoop);
-            // System.IO.File.WriteAllText(Application.dataPath + "/player_loop.txt", value);
         }
 
         static bool InjectSystem<T>(ref PlayerLoopSystem current, ref PlayerLoopSystem injected, bool first = true)
@@ -228,23 +225,10 @@ namespace PlayerLoopInjector
             Profiler.EndSample();
         }
 
-        static string PrintPlayerLoopTypes(ref PlayerLoopSystem current, int indent = 0)
-        {
-            string msg = "";
-            for (int i = 0; i < indent; i++) msg += "\t";
-            msg += current.type + "\n";
-
-            if (current.subSystemList != null)
-            {
-                for (int i = 0; i < current.subSystemList.Length; i++)
-                {
-                    msg += PrintPlayerLoopTypes(ref current.subSystemList[i], indent + 1);
-                }
-            }
-
-            return msg;
-        }
-
+        /// <summary>
+        /// Removes the injected system from running
+        /// </summary>
+        /// <param name="target">target to remove</param>
         public static void Remove(object target)
         {
             int index = injected.FindIndex(e => e.Owner == target);
@@ -257,11 +241,10 @@ namespace PlayerLoopInjector
             indirectInjectedLookup.Remove(target);
         }
 
-        public static void Inject<T>(T target) where T : IPlayerLoop
-        {
-            Inject((IPlayerLoop)target);
-        }
-
+        /// <summary>
+        /// Injects a target inheriting from IPlayerLoop into the PlayerLoop
+        /// </summary>
+        /// <param name="target">target to inject</param>
         public static void Inject(IPlayerLoop target)
         {
             var callbacks = new InjectedSystemCallbacks
@@ -280,6 +263,13 @@ namespace PlayerLoopInjector
             indirectInjectedLookup.Add(target, callbacks);
         }
 
+        /// <summary>
+        /// Injects the given callback into the given LoopInjectionPoint,
+        /// target is the owner for this injection
+        /// </summary>
+        /// <param name="target">owner of the injection</param>
+        /// <param name="injectionPoint">point in PlayerLoop to inject at</param>
+        /// <param name="callback">delegate to inject</param>
         public static void Inject(object target, LoopInjectionPoint injectionPoint, Action callback)
         {
             if (indirectInjectedLookup.TryGetValue(target, out var callbacks))
@@ -298,6 +288,10 @@ namespace PlayerLoopInjector
             indirectInjectedLookup.Add(target, callbacks);
         }
 
+        /// <summary>
+        /// Checks which IPlayerLoop interfaces the target is inheriting from and injects those into the PlayerLoop
+        /// </summary>
+        /// <param name="target">target object to inject</param>
         public static void Inject(object target)
         {
             if (target is IPlayerLoop playerLoop)
@@ -342,11 +336,19 @@ namespace PlayerLoopInjector
             }
         }
 
+        /// <summary>
+        /// Checks if the given target is injected
+        /// </summary>
+        /// <param name="target">target object to check</param>
+        /// <returns>true if injected</returns>
         public static bool IsInjected(object target)
         {
             return indirectInjectedLookup.ContainsKey(target);
         }
 
+        /// <summary>
+        /// Clears all injected delegates in Injector::Global
+        /// </summary>
         public static void ClearGlobal()
         {
             global.OnInitialization = null;
@@ -358,18 +360,28 @@ namespace PlayerLoopInjector
             global.OnEndOfFrame = null;
         }
 
+        /// <summary>
+        /// Clears all injected systems
+        /// </summary>
         public static void ClearInjected()
         {
             injected.Clear();
             indirectInjectedLookup.Clear();
         }
 
+        /// <summary>
+        /// Clears everything, both Global and Systems
+        /// </summary>
         public static void ClearAll()
         {
             ClearGlobal();
             ClearInjected();
         }
 
+        /// <summary>
+        /// Gives the amount of injected systems
+        /// </summary>
+        /// <returns>count of injected systems</returns>
         public static int Count()
         {
             return injected.Count;
@@ -404,5 +416,36 @@ namespace PlayerLoopInjector
                     throw new ArgumentOutOfRangeException(nameof(injectionPoint), injectionPoint, null);
             }
         }
+
+        #region DEBUG
+        /// <summary>
+        /// Helper to log out the PlayerLoop into a text file.
+        /// File is stored under "Assets/player_loop.txt"
+        /// </summary>
+        public static void LogPlayerLoop()
+        {
+            var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
+
+            var value = PrintPlayerLoopTypes(ref playerLoop);
+            System.IO.File.WriteAllText(Application.dataPath + "/player_loop.txt", value);
+        }
+
+        static string PrintPlayerLoopTypes(ref PlayerLoopSystem current, int indent = 0)
+        {
+            string msg = "";
+            for (int i = 0; i < indent; i++) msg += "\t";
+            msg += current.type + "\n";
+
+            if (current.subSystemList != null)
+            {
+                for (int i = 0; i < current.subSystemList.Length; i++)
+                {
+                    msg += PrintPlayerLoopTypes(ref current.subSystemList[i], indent + 1);
+                }
+            }
+
+            return msg;
+        }
+        #endregion
     }
 }
