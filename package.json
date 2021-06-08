@@ -1,0 +1,17 @@
+{
+    "name": "com.refsa.player_loop_injector",
+    "version": "0.1.0",
+    "displayName": "PlayerLoopInjector",
+    "description": "Utility to inject into the internal Unity PlayerLoop",
+    "unity": "2019.4",
+    "unityRelease": "22f1",
+    "dependencies": {},
+    "keywords": [
+        "PlayerLoop"
+    ],
+    "author": {
+        "name": "Refsa",
+        "email": "refsa.dev@gmail.com",
+        "url": "https://refsa.github.io"
+    }
+}
