@@ -129,6 +129,8 @@ namespace PlayerLoopInjector
 
         static void InjectedInitialization()
         {
+            injected.RemoveAll(e => e.Owner == null || e.Owner.Equals(null));
+
             global.OnInitialization?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
@@ -226,6 +228,11 @@ namespace PlayerLoopInjector
             indirectInjectedLookup.Remove(target);
         }
 
+        public static void Inject<T>(T target) where T : IPlayerLoop
+        {
+            Inject((IPlayerLoop)target);
+        }
+
         public static void Inject(IPlayerLoop target)
         {
             var callbacks = new InjectedSystemCallbacks
@@ -260,11 +267,6 @@ namespace PlayerLoopInjector
 
             injected.Add(callbacks);
             indirectInjectedLookup.Add(target, callbacks);
-        }
-
-        public static void Inject<T>(T target) where T : IPlayerLoop
-        {
-            Inject((IPlayerLoop)target);
         }
 
         public static void Inject(object target)
@@ -337,6 +339,11 @@ namespace PlayerLoopInjector
         {
             ClearGlobal();
             ClearInjected();
+        }
+
+        public static int Count()
+        {
+            return injected.Count;
         }
 
         static void SetUpdateCallback(InjectedSystemCallbacks callbacks, LoopInjectionPoint injectionPoint, Action callback)

@@ -7,6 +7,16 @@ using UnityEngine.TestTools;
 
 namespace PlayerLoopInjector.Tests
 {
+    class InitializationSystem : IPlayerLoopInitialization
+    {
+        public float Count = 0;
+
+        public void PlayerLoopInitialization()
+        {
+            Count++;
+        }
+    }
+
     class EarlyUpdateSystem : IPlayerLoopEarlyUpdate
     {
         public float Count = 0;
@@ -108,8 +118,33 @@ namespace PlayerLoopInjector.Tests
         }
     }
 
+    class InjectedComponent : MonoBehaviour, IPlayerLoopPostUpdate
+    {
+        public void PlayerLoopPostUpdate()
+        {
+
+        }
+    }
+
     public class InjectorTests
     {
+        [UnityTest]
+        public IEnumerator InjectInitialization()
+        {
+            var initializationSystem = new InitializationSystem();
+            Injector.Inject(initializationSystem);
+            yield return null;
+
+            Assert.AreEqual(1, initializationSystem.Count);
+
+            for (int i = 0; i < 10; i++)
+            {
+                yield return null;
+            }
+
+            Assert.AreEqual(11, initializationSystem.Count);
+        }
+
         [UnityTest]
         public IEnumerator InjectEarlyUpdate()
         {
@@ -238,10 +273,31 @@ namespace PlayerLoopInjector.Tests
 
             yield return null;
             Assert.True(Injector.IsInjected(injectedSystem));
+            Assert.AreEqual(1, Injector.Count());
             Injector.Remove(injectedSystem);
 
             yield return null;
             Assert.False(Injector.IsInjected(injectedSystem));
+            Assert.Zero(Injector.Count());
+        }
+
+        [UnityTest]
+        public IEnumerator SystemWithNullRefIsRemoved()
+        {
+            var go = new GameObject();
+            var injectedComponent = go.AddComponent<InjectedComponent>();
+            Injector.Inject(injectedComponent);
+
+            yield return null;
+
+            GameObject.Destroy(go);
+            injectedComponent = null;
+
+            yield return null;
+            yield return null;
+            yield return null;
+
+            Assert.Zero(Injector.Count());
         }
     }
 }
