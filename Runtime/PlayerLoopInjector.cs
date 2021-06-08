@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.LowLevel;
+using UnityEngine.Profiling;
 
 namespace PlayerLoopInjector
 {
@@ -131,72 +132,100 @@ namespace PlayerLoopInjector
         {
             injected.RemoveAll(e => e.Owner == null || e.Owner.Equals(null));
 
+            Profiler.BeginSample("PlayerLoopInjector::Initialization");
+
             global.OnInitialization?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnInitialization?.Invoke();
             }
+
+            Profiler.EndSample();
         }
 
         static void InjectedEarlyUpdate()
         {
+            Profiler.BeginSample("PlayerLoopInjector::EarlyUpdate");
+
             global.OnEarlyUpdate?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnEarlyUpdate?.Invoke();
             }
+
+            Profiler.EndSample();
         }
 
         static void InjectedFixedUpdate()
         {
+            Profiler.BeginSample("PlayerLoopInjector::FixedUpdate");
+
             global.OnFixedUpdate?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnFixedUpdate?.Invoke();
             }
+
+            Profiler.EndSample();
         }
 
         static void InjectedPreUpdate()
         {
+            Profiler.BeginSample("PlayerLoopInjector::PreUpdate");
+
             global.OnPreUpdate?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnPreUpdate?.Invoke();
             }
+
+            Profiler.EndSample();
         }
 
         static void InjectedUpdate()
         {
+            Profiler.BeginSample("PlayerLoopInjector::Update");
+
             global.OnUpdate?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnUpdate?.Invoke();
             }
+
+            Profiler.EndSample();
         }
 
         static void InjectedPostUpdate()
         {
+            Profiler.BeginSample("PlayerLoopInjector::PostUpdate");
+
             global.OnPostUpdate?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnPostUpdate?.Invoke();
             }
+
+            Profiler.EndSample();
         }
 
         static void InjectedEndOfFrameUpdate()
         {
+            Profiler.BeginSample("PlayerLoopInjector::EndOfFrame");
+
             global.OnEndOfFrame?.Invoke();
 
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnEndOfFrame?.Invoke();
             }
+
+            Profiler.EndSample();
         }
 
         static string PrintPlayerLoopTypes(ref PlayerLoopSystem current, int indent = 0)
