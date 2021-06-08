@@ -271,45 +271,45 @@ namespace PlayerLoopInjector
 
         public static void Inject(object target)
         {
-            if (target is IPlayerLoop networkLoop)
+            if (target is IPlayerLoop playerLoop)
             {
-                Inject(networkLoop);
+                Inject(playerLoop);
                 return;
             }
 
-            if (target is IPlayerLoopInitialization networkInitialization)
+            if (target is IPlayerLoopInitialization initialization)
             {
-                Inject(target, LoopInjectionPoint.Initialization, networkInitialization.PlayerLoopInitialization);
+                Inject(target, LoopInjectionPoint.Initialization, initialization.PlayerLoopInitialization);
             }
 
-            if (target is IPlayerLoopEarlyUpdate networkEarlyUpdate)
+            if (target is IPlayerLoopEarlyUpdate earlyUpdate)
             {
-                Inject(target, LoopInjectionPoint.EarlyUpdate, networkEarlyUpdate.PlayerLoopEarlyUpdate);
+                Inject(target, LoopInjectionPoint.EarlyUpdate, earlyUpdate.PlayerLoopEarlyUpdate);
             }
 
-            if (target is IPlayerLoopPreUpdate networkPreUpdate)
+            if (target is IPlayerLoopPreUpdate preUpdate)
             {
-                Inject(target, LoopInjectionPoint.PreUpdate, networkPreUpdate.PlayerLoopPreUpdate);
+                Inject(target, LoopInjectionPoint.PreUpdate, preUpdate.PlayerLoopPreUpdate);
             }
 
-            if (target is IPlayerLoopUpdate networkUpdate)
+            if (target is IPlayerLoopUpdate update)
             {
-                Inject(target, LoopInjectionPoint.Update, networkUpdate.PlayerLoopUpdate);
+                Inject(target, LoopInjectionPoint.Update, update.PlayerLoopUpdate);
             }
 
-            if (target is IPlayerLoopPostUpdate networkPostUpdate)
+            if (target is IPlayerLoopPostUpdate postUpdate)
             {
-                Inject(target, LoopInjectionPoint.PostUpdate, networkPostUpdate.PlayerLoopPostUpdate);
+                Inject(target, LoopInjectionPoint.PostUpdate, postUpdate.PlayerLoopPostUpdate);
             }
 
-            if (target is IPlayerLoopFixedUpdate networkFixedUpdate)
+            if (target is IPlayerLoopFixedUpdate fixedUpdate)
             {
-                Inject(target, LoopInjectionPoint.FixedUpdate, networkFixedUpdate.PlayerLoopFixedUpdate);
+                Inject(target, LoopInjectionPoint.FixedUpdate, fixedUpdate.PlayerLoopFixedUpdate);
             }
 
-            if (target is IPlayerLoopEndOfFrame networkEndOfFrameUpdate)
+            if (target is IPlayerLoopEndOfFrame endOfFrame)
             {
-                Inject(target, LoopInjectionPoint.EndOfFrame, networkEndOfFrameUpdate.PlayerLoopEndOfFrame);
+                Inject(target, LoopInjectionPoint.EndOfFrame, endOfFrame.PlayerLoopEndOfFrame);
             }
         }
 
