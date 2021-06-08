@@ -1,0 +1,15 @@
+{
+    "name": "PlayerLoopInjector.Editor",
+    "references": [
+        "GUID:32837f366df98d9468aa7fa9b4002f26"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
