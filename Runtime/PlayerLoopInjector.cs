@@ -316,6 +316,29 @@ namespace PlayerLoopInjector
             return indirectInjectedLookup.ContainsKey(target);
         }
 
+        public static void ClearGlobal()
+        {
+            global.OnInitialization = null;
+            global.OnEarlyUpdate = null;
+            global.OnFixedUpdate = null;
+            global.OnPreUpdate = null;
+            global.OnUpdate = null;
+            global.OnPostUpdate = null;
+            global.OnEndOfFrame = null;
+        }
+
+        public static void ClearInjected()
+        {
+            injected.Clear();
+            indirectInjectedLookup.Clear();
+        }
+
+        public static void ClearAll()
+        {
+            ClearGlobal();
+            ClearInjected();
+        }
+
         static void SetUpdateCallback(InjectedSystemCallbacks callbacks, LoopInjectionPoint injectionPoint, Action callback)
         {
             switch (injectionPoint)
