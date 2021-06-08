@@ -2,7 +2,7 @@ using System;
 
 namespace PlayerLoopInjector
 {
-    class InjectedSystemCallbacks
+    public class InjectedSystemCallbacks
     {
         public object Owner;
 

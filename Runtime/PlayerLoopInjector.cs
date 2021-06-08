@@ -7,13 +7,17 @@ namespace PlayerLoopInjector
 {
     public static class Injector
     {
+        static InjectedSystemCallbacks global;
         static List<InjectedSystemCallbacks> injected;
         static Dictionary<object, InjectedSystemCallbacks> indirectInjectedLookup;
+
+        public static InjectedSystemCallbacks Global => global;
 
         static Injector()
         {
             indirectInjectedLookup = new Dictionary<object, InjectedSystemCallbacks>();
             injected = new List<InjectedSystemCallbacks>();
+            global = new InjectedSystemCallbacks();
 
             var playerLoop = PlayerLoop.GetDefaultPlayerLoop();
 
@@ -69,8 +73,8 @@ namespace PlayerLoopInjector
 
             PlayerLoop.SetPlayerLoop(playerLoop);
 
-            var value = PrintPlayerLoopTypes(ref playerLoop);
-            System.IO.File.WriteAllText(Application.dataPath + "/player_loop.txt", value);
+            // var value = PrintPlayerLoopTypes(ref playerLoop);
+            // System.IO.File.WriteAllText(Application.dataPath + "/player_loop.txt", value);
         }
 
         static bool InjectSystem<T>(ref PlayerLoopSystem current, ref PlayerLoopSystem injected, bool first = true)
@@ -125,6 +129,8 @@ namespace PlayerLoopInjector
 
         static void InjectedInitialization()
         {
+            global.OnInitialization?.Invoke();
+
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnInitialization?.Invoke();
@@ -133,6 +139,8 @@ namespace PlayerLoopInjector
 
         static void InjectedEarlyUpdate()
         {
+            global.OnEarlyUpdate?.Invoke();
+
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnEarlyUpdate?.Invoke();
@@ -141,6 +149,8 @@ namespace PlayerLoopInjector
 
         static void InjectedFixedUpdate()
         {
+            global.OnFixedUpdate?.Invoke();
+
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnFixedUpdate?.Invoke();
@@ -149,6 +159,8 @@ namespace PlayerLoopInjector
 
         static void InjectedPreUpdate()
         {
+            global.OnPreUpdate?.Invoke();
+
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnPreUpdate?.Invoke();
@@ -157,6 +169,8 @@ namespace PlayerLoopInjector
 
         static void InjectedUpdate()
         {
+            global.OnUpdate?.Invoke();
+
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnUpdate?.Invoke();
@@ -165,6 +179,8 @@ namespace PlayerLoopInjector
 
         static void InjectedPostUpdate()
         {
+            global.OnPostUpdate?.Invoke();
+
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnPostUpdate?.Invoke();
@@ -173,6 +189,8 @@ namespace PlayerLoopInjector
 
         static void InjectedEndOfFrameUpdate()
         {
+            global.OnEndOfFrame?.Invoke();
+
             for (int i = 0; i < injected.Count; i++)
             {
                 injected[i].OnEndOfFrame?.Invoke();
@@ -204,6 +222,8 @@ namespace PlayerLoopInjector
             {
                 injected.RemoveAt(index);
             }
+
+            indirectInjectedLookup.Remove(target);
         }
 
         public static void Inject(IPlayerLoop target)
@@ -221,11 +241,7 @@ namespace PlayerLoopInjector
             };
 
             injected.Add(callbacks);
-        }
-
-        public static void Inject<T>(T target) where T : IPlayerLoop
-        {
-            Inject((IPlayerLoop)target);
+            indirectInjectedLookup.Add(target, callbacks);
         }
 
         public static void Inject(object target, LoopInjectionPoint injectionPoint, Action callback)
@@ -243,6 +259,12 @@ namespace PlayerLoopInjector
             SetUpdateCallback(callbacks, injectionPoint, callback);
 
             injected.Add(callbacks);
+            indirectInjectedLookup.Add(target, callbacks);
+        }
+
+        public static void Inject<T>(T target) where T : IPlayerLoop
+        {
+            Inject((IPlayerLoop)target);
         }
 
         public static void Inject(object target)
@@ -287,6 +309,11 @@ namespace PlayerLoopInjector
             {
                 Inject(target, LoopInjectionPoint.EndOfFrame, networkEndOfFrameUpdate.PlayerLoopEndOfFrame);
             }
+        }
+
+        public static bool IsInjected(object target)
+        {
+            return indirectInjectedLookup.ContainsKey(target);
         }
 
         static void SetUpdateCallback(InjectedSystemCallbacks callbacks, LoopInjectionPoint injectionPoint, Action callback)
