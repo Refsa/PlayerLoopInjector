@@ -387,6 +387,62 @@ namespace PlayerLoopInjector
             return injected.Count;
         }
 
+        public static void InjectGlobal(Action callback, LoopInjectionPoint injectionPoint)
+        {
+            switch(injectionPoint)
+            {
+                case LoopInjectionPoint.Initialization:
+                    global.OnInitialization += callback;
+                    break;
+                case LoopInjectionPoint.EarlyUpdate:
+                    global.OnEarlyUpdate += callback;
+                    break;
+                case LoopInjectionPoint.FixedUpdate:
+                    global.OnFixedUpdate += callback;
+                    break;
+                case LoopInjectionPoint.PreUpdate:
+                    global.OnPreUpdate += callback;
+                    break;
+                case LoopInjectionPoint.Update:
+                    global.OnUpdate += callback;
+                    break;
+                case LoopInjectionPoint.PostUpdate:
+                    global.OnPostUpdate += callback;
+                    break;
+                case LoopInjectionPoint.EndOfFrame:
+                    global.OnEndOfFrame += callback;
+                    break;
+            }
+        }
+
+        public static void UnInjectGlobal(Action callback, LoopInjectionPoint injectionPoint)
+        {
+            switch(injectionPoint)
+            {
+                case LoopInjectionPoint.Initialization:
+                    global.OnInitialization -= callback;
+                    break;
+                case LoopInjectionPoint.EarlyUpdate:
+                    global.OnEarlyUpdate -= callback;
+                    break;
+                case LoopInjectionPoint.FixedUpdate:
+                    global.OnFixedUpdate -= callback;
+                    break;
+                case LoopInjectionPoint.PreUpdate:
+                    global.OnPreUpdate -= callback;
+                    break;
+                case LoopInjectionPoint.Update:
+                    global.OnUpdate -= callback;
+                    break;
+                case LoopInjectionPoint.PostUpdate:
+                    global.OnPostUpdate -= callback;
+                    break;
+                case LoopInjectionPoint.EndOfFrame:
+                    global.OnEndOfFrame -= callback;
+                    break;
+            }
+        }
+
         static void SetUpdateCallback(InjectedSystemCallbacks callbacks, LoopInjectionPoint injectionPoint, Action callback)
         {
             switch (injectionPoint)
